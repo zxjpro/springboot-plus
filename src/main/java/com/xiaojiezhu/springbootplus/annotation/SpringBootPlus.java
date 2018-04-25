@@ -1,9 +1,8 @@
 package com.xiaojiezhu.springbootplus.annotation;
 
 import com.xiaojiezhu.springbootplus.web.FastJsonSupport;
-import com.xiaojiezhu.springbootplus.web.ResultMethodHandler;
+import com.xiaojiezhu.springbootplus.web.ResultValueConfiguration;
 import com.xiaojiezhu.springbootplus.web.ex.GlobalExceptionHandler;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 
 import java.lang.annotation.*;
@@ -18,7 +17,7 @@ import java.lang.annotation.*;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 @Import({FastJsonSupport.class,
-        ResultMethodHandler.class,
+        ResultValueConfiguration.class,
         GlobalExceptionHandler.class})
 public @interface SpringBootPlus {
 }
