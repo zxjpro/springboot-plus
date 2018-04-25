@@ -19,6 +19,7 @@
 
 ```java
 @SpringBootPlus
+@SpringBootApplication
 public class WebServerApplication {
 
     public static void main(String[] args) {

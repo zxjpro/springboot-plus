@@ -19,7 +19,6 @@ import java.io.PrintWriter;
  * 时间 2018/4/25 16:29
  * 说明 ...
  */
-@Component
 public class ResultMethodHandler implements AsyncHandlerMethodReturnValueHandler {
 
     //返回true就被处理
