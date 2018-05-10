@@ -7,16 +7,21 @@ package com.xiaojiezhu.springbootplus.web.ex;
  */
 public class NoticeException extends RuntimeException {
 
-    private int errorCode;
+    private int errorCode = 500;
 
     public NoticeException() {
-        this.errorCode = 500;
     }
 
 
     public NoticeException(int errorCode) {
         this.errorCode = errorCode;
     }
+
+
+    public NoticeException(String message) {
+        super(message);
+    }
+
 
     public NoticeException(String message, int errorCode) {
         super(message);
