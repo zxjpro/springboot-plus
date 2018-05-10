@@ -6,22 +6,39 @@ package com.xiaojiezhu.springbootplus.web.ex;
  * 说明 只抛异常，不打印异常信息
  */
 public class NoticeException extends RuntimeException {
+
+    private int errorCode;
+
     public NoticeException() {
+        this.errorCode = 500;
     }
 
-    public NoticeException(String message) {
+
+    public NoticeException(int errorCode) {
+        this.errorCode = errorCode;
+    }
+
+    public NoticeException(String message, int errorCode) {
         super(message);
+        this.errorCode = errorCode;
     }
 
-    public NoticeException(String message, Throwable cause) {
+    public NoticeException(String message, Throwable cause, int errorCode) {
         super(message, cause);
+        this.errorCode = errorCode;
     }
 
-    public NoticeException(Throwable cause) {
+    public NoticeException(Throwable cause, int errorCode) {
         super(cause);
+        this.errorCode = errorCode;
     }
 
-    public NoticeException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public NoticeException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace, int errorCode) {
         super(message, cause, enableSuppression, writableStackTrace);
+        this.errorCode = errorCode;
+    }
+
+    public int getErrorCode() {
+        return errorCode;
     }
 }

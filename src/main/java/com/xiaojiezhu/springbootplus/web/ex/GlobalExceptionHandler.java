@@ -20,7 +20,11 @@ public class GlobalExceptionHandler {
             throwable.printStackTrace();
         }
 
-        int errorCode = ExceptionMapping.getErrorCode(throwable);
+        int errorCode = 500;
+        if(throwable instanceof NoticeException){
+            NoticeException noticeException = (NoticeException) throwable;
+            errorCode = noticeException.getErrorCode();
+        }
         Result<?> result = new Result<>(errorCode,throwable.getMessage());
         return result;
     }
