@@ -5,6 +5,8 @@ import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.sql.SQLException;
+
 /**
  * @author zxj<br>
  * 时间 2017/12/12 15:20
@@ -25,7 +27,14 @@ public class GlobalExceptionHandler {
             NoticeException noticeException = (NoticeException) throwable;
             errorCode = noticeException.getErrorCode();
         }
-        Result<?> result = new Result<>(errorCode,throwable.getMessage());
+
+        //不输出SQL异常
+        String errorMsg = "系统异常";
+        if(!(throwable instanceof SQLException)){
+            errorMsg = throwable.getMessage();
+        }
+
+        Result<?> result = new Result<>(errorCode,errorMsg);
         return result;
     }
 }
