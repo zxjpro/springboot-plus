@@ -13,7 +13,7 @@ import java.sql.SQLException;
  * 说明 ...
  */
 @ControllerAdvice
-public class GlobalExceptionHandler {
+public class ResultExceptionHandler {
 
     @ResponseBody
     @ExceptionHandler
