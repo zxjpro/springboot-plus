@@ -4,8 +4,8 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.xiaojiezhu.springbootplus</groupId>
-    <artifactId>springbootplus</artifactId>
+    <groupId>com.xiaojiezhu.springboot.plus</groupId>
+    <artifactId>springboot-plus</artifactId>
     <version>1.01</version>
     <build>
         <plugins>
@@ -13,8 +13,8 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
+                    <source>1.8</source>
+                    <target>1.8</target>
                 </configuration>
             </plugin>
         </plugins>
@@ -23,7 +23,7 @@
     <properties>
         <spring.boot.version>1.5.9.RELEASE</spring.boot.version>
         <fastjson.version>1.2.47</fastjson.version>
-
+        <cache.version>1.0</cache.version>
     </properties>
 
     <dependencies>
@@ -35,9 +35,30 @@
         </dependency>
 
         <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-aop</artifactId>
+            <version>${spring.boot.version}</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>${fastjson.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.xiaojiezhu.cache</groupId>
+            <artifactId>cache</artifactId>
+            <version>${cache.version}</version>
+        </dependency>
+
+
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <scope>test</scope>
         </dependency>
 
     </dependencies>
