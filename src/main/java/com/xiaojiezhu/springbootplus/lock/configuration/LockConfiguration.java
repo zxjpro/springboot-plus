@@ -27,7 +27,7 @@ import org.springframework.context.annotation.*;
 @EnableAspectJAutoProxy(proxyTargetClass = true,exposeProxy = true)
 @Aspect()
 public class LockConfiguration implements ApplicationContextAware {
-    public static final Logger log = LoggerFactory.getLogger(LockConfiguration.class);
+    public static final Logger log = LoggerFactory.getLogger("springboot.plus.lock");
     public static final String LOCK_METHOD_INVOCATION = "lockMethodInvocation";
 
     private ApplicationContext context;

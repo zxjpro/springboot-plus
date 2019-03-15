@@ -6,10 +6,11 @@ import com.xiaojiezhu.springbootplus.MethodContext;
 import com.xiaojiezhu.springbootplus.MethodInfo;
 import com.xiaojiezhu.springbootplus.cache.annotation.PCache;
 import org.aspectj.lang.ProceedingJoinPoint;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Method;
 
-import static com.xiaojiezhu.springbootplus.lock.configuration.LockConfiguration.log;
 
 /**
  * time 2019/3/15 12:04
@@ -17,7 +18,7 @@ import static com.xiaojiezhu.springbootplus.lock.configuration.LockConfiguration
  * @author xiaojie.zhu <br>
  */
 public class CacheMethodInvocation extends AbstractMethodInvocation {
-
+    public static final Logger log = LoggerFactory.getLogger("springboot.plus.cache");
     private Cache cache;
 
 
