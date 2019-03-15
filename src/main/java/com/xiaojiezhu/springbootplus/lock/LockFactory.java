@@ -1,10 +1,9 @@
 package com.xiaojiezhu.springbootplus.lock;
 
-import org.redisson.api.RLock;
+import com.xiaojiezhu.cache.Cache;
+import com.xiaojiezhu.cache.MemoryCache;
 import org.redisson.api.RedissonClient;
 
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 /**
@@ -15,34 +14,37 @@ import java.util.concurrent.locks.ReentrantLock;
 public class LockFactory {
 
     private RedissonClient redissonClient;
-    private ConcurrentHashMap<String,Lock> locks = new ConcurrentHashMap<>();
+    private final Cache cache = new MemoryCache();
 
     public LockFactory(RedissonClient redissonClient) {
         this.redissonClient = redissonClient;
     }
 
 
-    public Lock newLock(String lockString , long lockTime){
-        if(redissonClient == null){
-            Lock lock = locks.get(lockString);
-            if(lock == null){
-                synchronized (this){
-                    lock = locks.get(lockString);
-                    if(lock == null){
-                        lock = new ReentrantLock();
-                        locks.put(lockString , lock);
+    public DLock newLock(String lockString , long timeout){
+        if(redissonClient != null){
+            // 分布式锁
+            DLock dLock = new PRLock(redissonClient.getLock(lockString));
+            return dLock;
+        }else{
+            // java 锁
+            DLock dLock = cache.getObject(lockString);
+            if(dLock == null){
+                synchronized (lockString){
+                    dLock = cache.getObject(lockString);
+                    if(dLock == null){
+                        dLock = new JavaLock(new ReentrantLock());
+                        cache.set(lockString , dLock);
+                        cache.expire(lockString , timeout + 5000);
                     }
                 }
             }
-            return lock;
+            return dLock;
 
-
-        }else{
-            // 分布式锁
-            RLock lock = redissonClient.getLock(lockString);
-            lock.lock();
-            return lock;
         }
+
+
+
     }
 
 

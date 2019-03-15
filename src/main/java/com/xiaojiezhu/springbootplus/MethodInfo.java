@@ -1,4 +1,4 @@
-package com.xiaojiezhu.springbootplus.lock;
+package com.xiaojiezhu.springbootplus;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,7 +9,7 @@ import java.util.List;
  *
  * @author xiaojie.zhu <br>
  */
-class MethodInfo {
+public class MethodInfo {
 
     /**
      * 方法签名
@@ -30,6 +30,11 @@ class MethodInfo {
      * 需要注入到锁定字符串的参数对应的索引
      */
     private List<Integer> argIndexs;
+
+    /**
+     * 过期的毫秒数
+     */
+    private long expireMs;
 
 
     /**
@@ -52,6 +57,14 @@ class MethodInfo {
         return sb.toString();
     }
 
+
+    public long getExpireMs() {
+        return expireMs;
+    }
+
+    public void setExpireMs(long expireMs) {
+        this.expireMs = expireMs;
+    }
 
     public String getSignature() {
         return signature;

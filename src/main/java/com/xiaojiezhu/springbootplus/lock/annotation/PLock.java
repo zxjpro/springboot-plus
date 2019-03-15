@@ -1,6 +1,7 @@
 package com.xiaojiezhu.springbootplus.lock.annotation;
 
 import java.lang.annotation.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * time 2019/3/13 11:44
@@ -18,4 +19,16 @@ public @interface PLock {
      * @return
      */
     String value() default "";
+
+    /**
+     * 锁的过期时间
+     * @return
+     */
+    long expireTime();
+
+    /**
+     * 时间单位
+     * @return
+     */
+    TimeUnit timeUnit() default TimeUnit.MILLISECONDS;
 }

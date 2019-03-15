@@ -8,6 +8,8 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.redisson.api.RedissonClient;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
@@ -26,10 +28,9 @@ import org.springframework.context.annotation.Import;
  *
  * @author xiaojie.zhu <br>
  */
-@AutoConfigureAfter(LockConfiguration.LockFactoryConfiguration.class)
 @Aspect()
-@Import(LockConfiguration.LockFactoryConfiguration.class)
 public class LockConfiguration implements ApplicationContextAware {
+    public static final Logger log = LoggerFactory.getLogger(LockConfiguration.class);
 
     private ApplicationContext context;
     private MethodInvocation methodInvocation;
@@ -44,6 +45,9 @@ public class LockConfiguration implements ApplicationContextAware {
         @ConditionalOnBean(RedissonClient.class)
         @Bean
         public LockFactory lockRedisFactory(RedissonClient redissonClient){
+            log.info("");
+            log.info("初始化分布式锁");
+            log.info("");
             return new LockFactory(redissonClient);
         }
     }
@@ -54,11 +58,15 @@ public class LockConfiguration implements ApplicationContextAware {
     @ConditionalOnMissingBean(LockFactory.class)
     @Bean
     public LockFactory lockJavaFactory(){
+        log.info("");
+        log.info("初始化java锁");
+        log.info("");
         return new LockFactory(null);
     }
 
     @Bean
     public MethodInvocation lockMethodInvocation(LockFactory lockFactory){
+        log.info("锁机制初始化成功");
         return new DefaultMethodInvocation(lockFactory);
     }
 
