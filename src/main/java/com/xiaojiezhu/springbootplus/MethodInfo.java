@@ -17,6 +17,15 @@ public class MethodInfo {
     private String signature;
 
     /**
+     * 方法名
+     */
+    private String methodName;
+
+    private String simpleClassName;
+
+    private String className;
+
+    /**
      * 切割出来的部分
      */
     private List<String> splitString;
@@ -52,8 +61,6 @@ public class MethodInfo {
 
         sb.append(suffix);
 
-        sb.insert(0 , signature);
-
         return sb.toString();
     }
 
@@ -64,6 +71,30 @@ public class MethodInfo {
 
     public void setExpireMs(long expireMs) {
         this.expireMs = expireMs;
+    }
+
+    public String getMethodName() {
+        return methodName;
+    }
+
+    public void setMethodName(String methodName) {
+        this.methodName = methodName;
+    }
+
+    public String getSimpleClassName() {
+        return simpleClassName;
+    }
+
+    public void setSimpleClassName(String simpleClassName) {
+        this.simpleClassName = simpleClassName;
+    }
+
+    public String getClassName() {
+        return className;
+    }
+
+    public void setClassName(String className) {
+        this.className = className;
     }
 
     public String getSignature() {

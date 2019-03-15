@@ -18,16 +18,14 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.autoconfigure.condition.SearchStrategy;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.DependsOn;
-import org.springframework.context.annotation.Import;
+import org.springframework.context.annotation.*;
 
 /**
  * time 2019/3/13 11:41
  *
  * @author xiaojie.zhu <br>
  */
+@EnableAspectJAutoProxy(proxyTargetClass = true,exposeProxy = true)
 @Aspect()
 public class LockConfiguration implements ApplicationContextAware {
     public static final Logger log = LoggerFactory.getLogger(LockConfiguration.class);

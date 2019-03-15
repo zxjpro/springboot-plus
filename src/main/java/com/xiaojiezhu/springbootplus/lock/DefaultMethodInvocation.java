@@ -25,7 +25,7 @@ import java.util.regex.Pattern;
  */
 public class DefaultMethodInvocation implements MethodInvocation {
 
-    public final Logger log = LoggerFactory.getLogger(getClass());
+    public final Logger log = LoggerFactory.getLogger("springboot.plus.lock");
 
     private static final Object[] EMPTY = new Object[]{};
 
@@ -45,28 +45,30 @@ public class DefaultMethodInvocation implements MethodInvocation {
         String signatureString = methodSignature.toLongString();
         MethodInfo methodInfo = methodInfos.get(signatureString);
         if(methodInfo == null){
-            methodInfo = createMethodInfo(point.getArgs(), methodSignature);
+            methodInfo = createMethodInfo(point.getTarget() , point.getArgs(), methodSignature);
             methodInfos.put(signatureString , methodInfo);
         }
 
         String lockString = methodInfo.buildString(point.getArgs());
 
-        log.debug("准备切入锁 : " + methodInfo.getSignature());
+        String logName = methodInfo.getSimpleClassName() + "." + methodInfo.getMethodName() + "()";
+
+        log.debug("准备切入锁 : " + logName);
         DLock dLock = lockFactory.newLock(lockString, methodInfo.getExpireMs());
         dLock.lockInterruptibly(methodInfo.getExpireMs() , TimeUnit.MILLISECONDS);
 
-        log.debug("锁成功 : " + methodInfo.getSignature());
+        log.debug("锁成功 : " + logName);
         Object proceed;
         try {
             proceed = point.proceed();
         } finally {
             dLock.unlock();
-            log.debug("锁释放 : " + methodInfo.getSignature());
+            log.debug("锁释放 : " + logName);
         }
         return proceed;
     }
 
-    private MethodInfo createMethodInfo(Object[] args, MethodSignature methodSignature) {
+    private MethodInfo createMethodInfo(Object target , Object[] args, MethodSignature methodSignature) {
         Method method = methodSignature.getMethod();
         PLock pLock = method.getAnnotation(PLock.class);
         if(pLock == null){
@@ -111,6 +113,9 @@ public class DefaultMethodInvocation implements MethodInvocation {
 
 
         MethodInfo methodInfo = new MethodInfo();
+        methodInfo.setClassName(target.getClass().getName());
+        methodInfo.setSimpleClassName(target.getClass().getSimpleName());
+        methodInfo.setMethodName(methodSignature.getMethod().getName());
         methodInfo.setExpireMs(expireMs);
         methodInfo.setSignature(methodSignature.toLongString());
         methodInfo.setArgIndexs(argIndexs);
