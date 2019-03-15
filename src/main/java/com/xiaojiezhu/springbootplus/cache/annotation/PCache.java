@@ -1,5 +1,6 @@
 package com.xiaojiezhu.springbootplus.cache.annotation;
 
+import java.lang.annotation.*;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -7,6 +8,10 @@ import java.util.concurrent.TimeUnit;
  *
  * @author xiaojie.zhu <br>
  */
+@Documented
+@Inherited
+@Retention(RetentionPolicy.RUNTIME)
+@Target(ElementType.METHOD)
 public @interface PCache {
 
     /**
