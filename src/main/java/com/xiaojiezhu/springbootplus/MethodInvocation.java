@@ -1,4 +1,4 @@
-package com.xiaojiezhu.springbootplus.lock;
+package com.xiaojiezhu.springbootplus;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 

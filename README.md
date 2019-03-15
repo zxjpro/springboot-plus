@@ -43,10 +43,10 @@ public class WebServerApplication {
 
 springboot-plus 提供了分布式锁的功能。
 
-首先，在启动类中，加上 `@EnableLock` 注解，它位于 `com.xiaojiezhu.springbootplus.lock.annotation.EnableLock`
+首先，在启动类中，加上 `@EnablePlusLock()` 注解，它位于 `com.xiaojiezhu.springbootplus.lock.annotation.EnablePlusLock`
 
 ```java
-import com.xiaojiezhu.springbootplus.lock.annotation.EnableLock;
+import com.xiaojiezhu.springbootplus.lock.annotation.EnablePlusLock;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

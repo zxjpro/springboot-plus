@@ -1,84 +1,64 @@
-package com.xiaojiezhu.springbootplus.lock;
+package com.xiaojiezhu.springbootplus;
 
-import com.xiaojiezhu.springbootplus.DateUtil;
-import com.xiaojiezhu.springbootplus.MethodInfo;
 import com.xiaojiezhu.springbootplus.lock.annotation.PLock;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.util.Assert;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 /**
- * time 2019/3/14 15:23
+ * time 2019/3/15 12:34
  *
  * @author xiaojie.zhu <br>
  */
-public class DefaultMethodInvocation implements MethodInvocation {
-
-    public final Logger log = LoggerFactory.getLogger("springboot.plus.lock");
-
+public abstract class AbstractMethodInvocation implements MethodInvocation{
     private static final Object[] EMPTY = new Object[]{};
 
     private static final Pattern PATTERN = Pattern.compile("\\{([\\d]{1})\\}");
 
-    private final ConcurrentHashMap<String , MethodInfo> methodInfos = new ConcurrentHashMap<>();
+    private MethodContext methodContext;
 
-    private final LockFactory lockFactory;
-
-    public DefaultMethodInvocation(LockFactory lockFactory) {
-        this.lockFactory = lockFactory;
+    public AbstractMethodInvocation(MethodContext methodContext) {
+        this.methodContext = methodContext;
     }
+
+    /**
+     * 获取注解的属性
+     * @param method
+     * @return
+     */
+    protected abstract AnnotationAttribute getAnnotationAttribute(Method method);
+    protected abstract Object invoke0(ProceedingJoinPoint point , MethodInfo methodInfo) throws Throwable;
+
 
     @Override
     public Object invoke(ProceedingJoinPoint point) throws Throwable {
+
         MethodSignature methodSignature = (MethodSignature) point.getSignature();
-        String signatureString = methodSignature.toLongString();
-        MethodInfo methodInfo = methodInfos.get(signatureString);
+        MethodInfo methodInfo = methodContext.get(methodSignature.getMethod());
         if(methodInfo == null){
             methodInfo = createMethodInfo(point.getTarget() , point.getArgs(), methodSignature);
-            methodInfos.put(signatureString , methodInfo);
+            methodContext.put(methodSignature.getMethod() , methodInfo);
         }
 
-        String lockString = methodInfo.buildString(point.getArgs());
-
-        String logName = methodInfo.getSimpleClassName() + "." + methodInfo.getMethodName() + "()";
-
-        log.debug("准备切入锁 : " + logName);
-        DLock dLock = lockFactory.newLock(lockString, methodInfo.getExpireMs());
-        dLock.lockInterruptibly(methodInfo.getExpireMs() , TimeUnit.MILLISECONDS);
-
-        log.debug("锁成功 : " + logName);
-        Object proceed;
-        try {
-            proceed = point.proceed();
-        } finally {
-            dLock.unlock();
-            log.debug("锁释放 : " + logName);
-        }
-        return proceed;
+        return invoke0(point , methodInfo);
     }
 
-    private MethodInfo createMethodInfo(Object target , Object[] args, MethodSignature methodSignature) {
+    protected MethodInfo createMethodInfo(Object target , Object[] args, MethodSignature methodSignature) {
         Method method = methodSignature.getMethod();
-        PLock pLock = method.getAnnotation(PLock.class);
-        if(pLock == null){
-            throw new RuntimeException("DLock annotation is null");
-        }
+        AnnotationAttribute annotationAttribute = getAnnotationAttribute(method);
         if(args == null){
             args = EMPTY;
         }
 
-        String p = pLock.value();
+        String p = annotationAttribute.getPattern();
 
         // 存放对应参数的索引
         List<Integer> argIndexs = new ArrayList<>();
@@ -102,14 +82,14 @@ public class DefaultMethodInvocation implements MethodInvocation {
 
         int needArgLength = Collections.max(argIndexs) + 1;
         if(args.length < needArgLength){
-            throw new IllegalArgumentException("format string fail , " + pLock.value() + " required as least " + needArgLength + " args");
+            throw new IllegalArgumentException("format string fail , " + annotationAttribute.getPattern() + " required as least " + needArgLength + " args");
         }
 
-        Assert.notNull(pLock.timeUnit() , methodSignature.toLongString() + " " + PLock.class.getSimpleName() + "() annotation timeUnit atrribute not be null");
-        if(pLock.expireTime() <= 0){
+        Assert.notNull(annotationAttribute.getTimeUnit() , methodSignature.toLongString() + " " + PLock.class.getSimpleName() + "() annotation timeUnit atrribute not be null");
+        if(annotationAttribute.getTime() <= 0){
             throw new IllegalArgumentException(methodSignature.toLongString() + " " + PLock.class.getSimpleName() + "() annotation expireTime must > 0");
         }
-        long expireMs = DateUtil.ms(pLock.expireTime(), pLock.timeUnit());
+        long expireMs = DateUtil.ms(annotationAttribute.getTime(), annotationAttribute.getTimeUnit());
 
 
         MethodInfo methodInfo = new MethodInfo();
@@ -126,5 +106,36 @@ public class DefaultMethodInvocation implements MethodInvocation {
 
 
 
+
+
+    public static class AnnotationAttribute{
+        private String pattern;
+        private long time;
+        private TimeUnit timeUnit;
+
+        public String getPattern() {
+            return pattern;
+        }
+
+        public void setPattern(String pattern) {
+            this.pattern = pattern;
+        }
+
+        public long getTime() {
+            return time;
+        }
+
+        public void setTime(long time) {
+            this.time = time;
+        }
+
+        public TimeUnit getTimeUnit() {
+            return timeUnit;
+        }
+
+        public void setTimeUnit(TimeUnit timeUnit) {
+            this.timeUnit = timeUnit;
+        }
+    }
 
 }

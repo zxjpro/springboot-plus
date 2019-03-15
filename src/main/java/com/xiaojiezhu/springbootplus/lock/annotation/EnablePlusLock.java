@@ -14,5 +14,5 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 @Import({LockConfiguration.class})
-public @interface EnableLock {
+public @interface EnablePlusLock {
 }

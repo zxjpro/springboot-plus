@@ -15,10 +15,10 @@ import java.util.concurrent.TimeUnit;
 public @interface PLock {
 
     /**
-     * 如果不加参数，则默认锁全局方法
+     * 锁定的字符串
      * @return
      */
-    String value() default "";
+    String value();
 
     /**
      * 锁的过期时间
