@@ -1,5 +1,6 @@
 package com.xiaojiezhu.springbootplus;
 
+import com.xiaojiezhu.springbootplus.cache.DataType;
 import com.xiaojiezhu.springbootplus.lock.annotation.PLock;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
@@ -8,6 +9,7 @@ import org.springframework.util.Assert;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
@@ -93,6 +95,8 @@ public abstract class AbstractMethodInvocation implements MethodInvocation{
 
 
         MethodInfo methodInfo = new MethodInfo();
+        methodInfo.setReturnType(method.getReturnType());
+        methodInfo.setDataType(annotationAttribute.getDataType());
         methodInfo.setClassName(target.getClass().getName());
         methodInfo.setSimpleClassName(target.getClass().getSimpleName());
         methodInfo.setMethodName(methodSignature.getMethod().getName());
@@ -106,6 +110,32 @@ public abstract class AbstractMethodInvocation implements MethodInvocation{
 
 
 
+    protected DataType dataType(Method method){
+        Assert.notNull(method , "method不能为空");
+
+        Class<?> returnType = method.getReturnType();
+
+        if(int.class == returnType || Integer.class == returnType){
+            return DataType.INT;
+        }else if(short.class == returnType || Short.class == returnType){
+            return DataType.SHORT;
+        }else if(long.class == returnType || Long.class == returnType){
+            return DataType.LONG;
+        }else if(float.class == returnType || Float.class == returnType){
+            return DataType.FLOAT;
+        }else if(double.class == returnType || Double.class == returnType){
+            return DataType.DOUBLE;
+        }else if(CharSequence.class.isAssignableFrom(returnType)){
+            return DataType.STRING;
+        }else if(Date.class.isAssignableFrom(returnType)){
+            return DataType.DATE;
+        }else{
+            return DataType.JSON;
+        }
+    }
+
+
+
 
 
     public static class AnnotationAttribute{
@@ -113,8 +143,21 @@ public abstract class AbstractMethodInvocation implements MethodInvocation{
         private long time;
         private TimeUnit timeUnit;
 
+        /**
+         * 数据类型
+         */
+        private DataType dataType;
+
         public String getPattern() {
             return pattern;
+        }
+
+        public DataType getDataType() {
+            return dataType;
+        }
+
+        public void setDataType(DataType dataType) {
+            this.dataType = dataType;
         }
 
         public void setPattern(String pattern) {

@@ -19,12 +19,12 @@ import java.lang.reflect.Method;
  */
 public class CacheMethodInvocation extends AbstractMethodInvocation {
     public static final Logger log = LoggerFactory.getLogger("springboot.plus.cache");
-    private Cache cache;
+    private CacheProxy cacheProxy;
 
 
     public CacheMethodInvocation(Cache cache, MethodContext methodContext) {
         super(methodContext);
-        this.cache = cache;
+        this.cacheProxy = new DefaultCacheProxy(cache);
     }
 
     @Override
@@ -35,14 +35,14 @@ public class CacheMethodInvocation extends AbstractMethodInvocation {
 
         log.debug("进入缓存插件 : " + logName);
 
-        Object object = this.cache.getObject(cacheKey);
+        Object object = this.cacheProxy.get(cacheKey , methodInfo.getDataType());
 
         if(object == null){
             log.debug("缓存中不存在值，初始化值到缓存中 : " + logName);
             object = point.proceed();
-            cache.set(cacheKey , object);
+            this.cacheProxy.set(cacheKey , object , methodInfo.getDataType());
             if(methodInfo.getExpireMs() != -1){
-                cache.expire(cacheKey , methodInfo.getExpireMs());
+                this.cacheProxy.expire(cacheKey , methodInfo.getExpireMs());
             }
 
         }else{
@@ -66,6 +66,15 @@ public class CacheMethodInvocation extends AbstractMethodInvocation {
         annotationAttribute.setPattern(pCache.value());
         annotationAttribute.setTime(pCache.expireTime());
         annotationAttribute.setTimeUnit(pCache.timeUnit());
+
+        if(DataType.AUTO == pCache.dataType()){
+            if(Object.class == method.getReturnType()){
+                throw new IllegalArgumentException("方法反回类型指定为 Object 时，必须指定 @PCache(dataType=xx)");
+            }
+            annotationAttribute.setDataType(dataType(method));
+        }else{
+            annotationAttribute.setDataType(pCache.dataType());
+        }
         return annotationAttribute;
     }
 

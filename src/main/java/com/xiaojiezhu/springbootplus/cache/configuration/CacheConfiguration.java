@@ -39,7 +39,7 @@ public class CacheConfiguration implements ApplicationContextAware {
     @Bean(name = CACHE_METHOD_INVOCATION)
     public MethodInvocation cacheMethodInvocation(Cache cache){
         log.info("缓存插件初始化");
-        return new CacheMethodInvocation(cache , SimpleMethodContext.getInstance());
+        return new CacheMethodInvocation(cache , new SimpleMethodContext());
     }
 
 

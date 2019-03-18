@@ -199,3 +199,50 @@ public class HelloServiceImpl implements HelloService{
 ```
 
 通过上面提供的两种方法，就能解决在方法内调用，切面不生效的问题
+
+
+
+# 缓存注解
+
+ 未完成..
+
+
+
+
+
+# 注意事项
+
+这里讨论的是当同时使用 `@PCache()` 和 `@PLock()` 时，`@PCache()` 修饰的方法中，如果已有缓存，需不需要再进入锁的问题。
+
+我认为既然已经缓存，并且根本不会进 `@PCache()` 所修饰的目标方法，那么锁的机制是没有必要的，因为都是从缓存中取。
+当然这个需要具体问题具体分析，如果涉及到一些状态，数量的修改，需要一个全局锁，那么也是可以一起用的。
+
+这里说一下这两种状态要怎么处理
+
+1. 不需进锁
+
+```java
+// 把 @EnablePlusCache() 放在前面，则不会进入锁
+@EnablePlusCache
+@EnablePlusLock
+@SpringBootApplication
+public class App {
+    public static void main(String[] args) {
+        SpringApplication.run(App.class , args);
+    }
+}
+```
+
+1.需要进锁
+
+```java
+// 把 @EnablePlusLock() 放在前面，则在同时已有缓存的情况下，也会进入锁
+@EnablePlusLock
+@EnablePlusCache
+@SpringBootApplication
+public class App {
+    public static void main(String[] args) {
+        SpringApplication.run(App.class , args);
+    }
+}
+```

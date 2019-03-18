@@ -1,5 +1,7 @@
 package com.xiaojiezhu.springbootplus;
 
+import com.xiaojiezhu.springbootplus.cache.DataType;
+
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -45,6 +47,18 @@ public class MethodInfo {
      */
     private long expireMs;
 
+    /**
+     * 方法的返回值类型
+     */
+    private Class<?> returnType;
+
+    /**
+     * 该方法返回值的数据类型
+     */
+    private DataType dataType;
+
+
+
 
     /**
      * 根据参数构建字符串
@@ -87,6 +101,22 @@ public class MethodInfo {
 
     public void setSimpleClassName(String simpleClassName) {
         this.simpleClassName = simpleClassName;
+    }
+
+    public Class<?> getReturnType() {
+        return returnType;
+    }
+
+    public void setReturnType(Class<?> returnType) {
+        this.returnType = returnType;
+    }
+
+    public DataType getDataType() {
+        return dataType;
+    }
+
+    public void setDataType(DataType dataType) {
+        this.dataType = dataType;
     }
 
     public String getClassName() {

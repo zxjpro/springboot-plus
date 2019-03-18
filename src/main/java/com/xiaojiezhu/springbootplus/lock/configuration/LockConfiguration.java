@@ -65,7 +65,7 @@ public class LockConfiguration implements ApplicationContextAware {
     @Bean(name = LOCK_METHOD_INVOCATION)
     public MethodInvocation lockMethodInvocation(LockFactory lockFactory){
         log.info("锁机制初始化成功");
-        return new LockMethodInvocation(lockFactory , SimpleMethodContext.getInstance());
+        return new LockMethodInvocation(lockFactory , new SimpleMethodContext());
     }
 
     @Around("lockPoint()")

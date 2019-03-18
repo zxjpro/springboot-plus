@@ -23,14 +23,8 @@ public class SimpleMethodContext implements MethodContext {
     }
 
 
-    private SimpleMethodContext(){}
+    public SimpleMethodContext(){}
 
 
-    public static SimpleMethodContext getInstance(){
-        return Instance.INSTANCE;
-    }
 
-    private static class Instance{
-        private static final SimpleMethodContext INSTANCE = new SimpleMethodContext();
-    }
 }
