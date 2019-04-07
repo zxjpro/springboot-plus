@@ -1,6 +1,7 @@
 package com.xiaojiezhu.springbootplus.annotation;
 
 import com.xiaojiezhu.springbootplus.web.FastJsonSupport;
+import com.xiaojiezhu.springbootplus.web.LoggerFilterConfiguration;
 import com.xiaojiezhu.springbootplus.web.ResultValueConfiguration;
 import com.xiaojiezhu.springbootplus.web.ex.ResultExceptionHandler;
 import org.springframework.context.annotation.Import;
@@ -16,8 +17,9 @@ import java.lang.annotation.*;
 @Inherited
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-@Import({FastJsonSupport.class,
-        ResultValueConfiguration.class,
+@Import({ResultValueConfiguration.class,
+        LoggerFilterConfiguration.class,
         ResultExceptionHandler.class})
 public @interface SpringBootPlus {
 }
+

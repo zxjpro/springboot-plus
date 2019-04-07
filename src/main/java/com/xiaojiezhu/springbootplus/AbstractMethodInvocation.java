@@ -82,7 +82,10 @@ public abstract class AbstractMethodInvocation implements MethodInvocation{
         }
         String suffix = p.substring(lastFindIndex);
 
-        int needArgLength = Collections.max(argIndexs) + 1;
+        int needArgLength = 0;
+        if(argIndexs.size() != 0){
+            needArgLength = Collections.max(argIndexs) + 1;
+        }
         if(args.length < needArgLength){
             throw new IllegalArgumentException("format string fail , " + annotationAttribute.getPattern() + " required as least " + needArgLength + " args");
         }
