@@ -1,6 +1,8 @@
 package com.xiaojiezhu.springbootplus.web.ex;
 
 import com.xiaojiezhu.springbootplus.Result;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -14,12 +16,13 @@ import java.sql.SQLException;
  */
 @ControllerAdvice
 public class ResultExceptionHandler {
+    public final Logger LOG = LoggerFactory.getLogger(getClass());
 
     @ResponseBody
     @ExceptionHandler
     public Result<?> handler(Throwable throwable){
         if(ExceptionMapping.isPrintError(throwable)){
-            throwable.printStackTrace();
+            LOG.error(throwable.getMessage() , throwable);
         }
 
         int errorCode = 500;
